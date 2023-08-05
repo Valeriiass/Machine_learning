@@ -1,0 +1,970 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a8eda425-3f4a-47ba-8ec8-91eaf46921b8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#WIKI_cities_pop"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 87,
+   "id": "3202b69a-cc8a-4e90-b893-7d125a3227cb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from bs4 import BeautifulSoup\n",
+    "import requests\n",
+    "import pandas as pd\n",
+    "import re"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 88,
+   "id": "14464db1-db4a-4ad1-a669-d0ea818e493b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "url = \"https://en.wikipedia.org/wiki/List_of_European_cities_by_population_within_city_limits\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 89,
+   "id": "0c25fcb1-89eb-4655-b478-512690a2d4b2",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "200"
+      ]
+     },
+     "execution_count": 89,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "response = requests.get(url)\n",
+    "response.status_code"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 90,
+   "id": "2c21279c-3423-49b8-8c45-9ac894d08dbe",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "soup = BeautifulSoup(response.content, \"html.parser\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 91,
+   "id": "b2fbd107-0809-40ad-a6cd-3bf12b9ac372",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'31 December 2022'"
+      ]
+     },
+     "execution_count": 91,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.select(\"td:nth-child(5) > span\")[0].get_text()   #THIS  date"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "id": "ec4d9b7e-ddd5-4681-8567-4d6965515e2f",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Moscow'"
+      ]
+     },
+     "execution_count": 55,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.select(\"td:nth-child(2) > b > a\")[0].get_text()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 57,
+   "id": "c564508d-917e-4c78-b24c-a13feed3781e",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Turkey'"
+      ]
+     },
+     "execution_count": 57,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.select(\"td:nth-child(3) > a\")[0].get_text()     #THIS  country"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 92,
+   "id": "2585a5b8-25e1-4f5d-a567-d0da9db3e570",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<a href=\"/wiki/Kyiv\" title=\"Kyiv\">Kyiv</a>"
+      ]
+     },
+     "execution_count": 92,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.select(\"td:nth-child(2) > b > a\")[4]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 107,
+   "id": "d0104112-8433-43b3-84c3-50496cbcc60b",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "19"
+      ]
+     },
+     "execution_count": 107,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(soup.select(\"td:nth-child(2) > a\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 110,
+   "id": "b4028849-6d11-4f90-831a-aca4bb89564b",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "17"
+      ]
+     },
+     "execution_count": 110,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(soup.select(\"td:nth-child(2) > b > a\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 148,
+   "id": "f6fd2fa3-f748-4941-8634-cd1fea79befb",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Odesa'"
+      ]
+     },
+     "execution_count": 148,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.select(\"td:nth-child(2)\")[35].get_text()    #THIS city"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 125,
+   "id": "bceea9a8-3714-43a1-a11f-c5b1ac2bb18d",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "41"
+      ]
+     },
+     "execution_count": 125,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(soup.select(\"td:nth-child(2)\"))  "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 147,
+   "id": "54d63912-cd07-4939-8bbe-953f57a0a73c",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'46.485°N 30.743°E'"
+      ]
+     },
+     "execution_count": 147,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.select(\"span.geo-dec\")[35].get_text()    #THIS LOC"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 136,
+   "id": "78276636-c021-48a1-92e0-f11a9595e06f",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<td><a href=\"/wiki/Odesa\" title=\"Odesa\">Odesa</a></td>"
+      ]
+     },
+     "execution_count": 136,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.select(\"td:nth-child(2)\")[35]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "eb31ccef-3f66-48e4-ba49-b2740ee9f22e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#mw-content-text > div.mw-parser-output > table > tbody > tr:nth-child(1) > td:nth-child(2) > a"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e631c885-499c-4bde-807e-42c0dc493f05",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#mw-content-text > div.mw-parser-output > table > tbody > tr:nth-child(2) > td:nth-child(2) > b > a"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8a25c7c1-1e13-4ed1-a868-9c3d76b2aef7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#mw-content-text > div.mw-parser-output > table > tbody > tr:nth-child(3) > td:nth-child(2) > b > a"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "369c363f-c1bf-4296-a6fd-ff0c8b1ce792",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#mw-content-text > div.mw-parser-output > table > tbody > tr:nth-child(4) > td:nth-child(2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 152,
+   "id": "a68b3e80-b755-4592-949a-349695c4929b",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'\\n15,907,951[b]\\n\\n'"
+      ]
+     },
+     "execution_count": 152,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.select(\"td:nth-child(4)\")[0].get_text()    #THIS pop"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 149,
+   "id": "6b3d211a-c407-479a-9735-8c87bedc7249",
+   "metadata": {
+    "collapsed": true,
+    "jupyter": {
+     "outputs_hidden": true
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[<span data-sort-value=\"000000002022-12-31-0000\" style=\"white-space:nowrap\">31 December 2022</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002021-03-21-0000\" style=\"white-space:nowrap\">21 March 2021</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002022-12-31-0000\" style=\"white-space:nowrap\">31 December 2022</span>,\n",
+       " <span data-sort-value=\"000000002021-01-01-0000\" style=\"white-space:nowrap\">1 January 2021</span>,\n",
+       " <span data-sort-value=\"000000002022-01-01-0000\" style=\"white-space:nowrap\">1 January 2022</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002022-07-01-0000\" style=\"white-space:nowrap\">1 July 2022</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002022-06-30-0000\" style=\"white-space:nowrap\">30 June 2022</span>,\n",
+       " <span data-sort-value=\"000000002021-12-31-0000\" style=\"white-space:nowrap\">31 December 2021</span>,\n",
+       " <span data-sort-value=\"000000002022-01-01-0000\" style=\"white-space:nowrap\">1 January 2022</span>,\n",
+       " <span data-sort-value=\"000000002021-06-30-0000\" style=\"white-space:nowrap\">30 June 2021</span>,\n",
+       " <span data-sort-value=\"000000002021-01-01-0000\" style=\"white-space:nowrap\">1 January 2021</span>,\n",
+       " <span data-sort-value=\"000000002022-12-31-0000\" style=\"white-space:nowrap\">31 December 2022</span>,\n",
+       " <span data-sort-value=\"000000002022-01-01-0000\" style=\"white-space:nowrap\">1 January 2022</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002021-12-31-0000\" style=\"white-space:nowrap\">31 December 2021</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002022-01-01-0000\" style=\"white-space:nowrap\">1 January 2022</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002021-03-21-0000\" style=\"white-space:nowrap\">21 March 2021</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002022-01-01-0000\" style=\"white-space:nowrap\">1 January 2022</span>,\n",
+       " <span data-sort-value=\"000000002021-12-31-0000\" style=\"white-space:nowrap\">31 December 2021</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002023-01-01-0000\" style=\"white-space:nowrap\">1 January 2023</span>,\n",
+       " <span data-sort-value=\"000000002022-01-01-0000\" style=\"white-space:nowrap\">1 January 2022</span>]"
+      ]
+     },
+     "execution_count": 149,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.select(\"td:nth-child(5) > span\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 159,
+   "id": "3b59d86f-95ee-4d02-b251-1c22d3bd8769",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "city = []\n",
+    "country = []\n",
+    "population = []\n",
+    "date = []\n",
+    "location = []\n",
+    "\n",
+    "\n",
+    "for i in range(36):\n",
+    "    city.append(soup.select(\"td:nth-child(2)\")[i].get_text())\n",
+    "    country.append(soup.select(\"td:nth-child(3) > a\")[i].get_text())\n",
+    "    population.append(soup.select(\"td:nth-child(4)\")[i].get_text())\n",
+    "    date.append(soup.select(\"td:nth-child(5) > span\")[i].get_text())\n",
+    "    location.append(soup.select(\"span.geo-dec\")[i].get_text())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 160,
+   "id": "c93d7768-b846-4f55-b431-642f312c6d89",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>city_name</th>\n",
+       "      <th>country_name</th>\n",
+       "      <th>population</th>\n",
+       "      <th>date</th>\n",
+       "      <th>location</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Istanbul[a]</td>\n",
+       "      <td>Turkey</td>\n",
+       "      <td>\\n15,907,951[b]\\n\\n</td>\n",
+       "      <td>31 December 2022</td>\n",
+       "      <td>41.013611°N 28.955°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Moscow[c]</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>13,104,177\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>55.75°N 37.616667°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>London</td>\n",
+       "      <td>United Kingdom</td>\n",
+       "      <td>8,799,800\\n</td>\n",
+       "      <td>21 March 2021</td>\n",
+       "      <td>51.507222°N 0.1275°W</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Saint Petersburg</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>5,600,044\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>59.95°N 30.3°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Berlin</td>\n",
+       "      <td>Germany</td>\n",
+       "      <td>3,850,809\\n</td>\n",
+       "      <td>31 December 2022</td>\n",
+       "      <td>52.516667°N 13.383333°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>Madrid</td>\n",
+       "      <td>Spain</td>\n",
+       "      <td>3,305,408\\n</td>\n",
+       "      <td>1 January 2021</td>\n",
+       "      <td>40.383333°N 3.716667°W</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>Kyiv</td>\n",
+       "      <td>Ukraine</td>\n",
+       "      <td>2,952,301\\n</td>\n",
+       "      <td>1 January 2022</td>\n",
+       "      <td>50.45°N 30.523333°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>7</th>\n",
+       "      <td>Rome</td>\n",
+       "      <td>Italy</td>\n",
+       "      <td>2,748,109\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>41.9°N 12.5°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>Bucharest</td>\n",
+       "      <td>Romania</td>\n",
+       "      <td>2,162,281\\n</td>\n",
+       "      <td>1 July 2022</td>\n",
+       "      <td>44.4325°N 26.103889°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>Paris</td>\n",
+       "      <td>France</td>\n",
+       "      <td>2,102,650\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>48.8567°N 2.3508°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>Minsk</td>\n",
+       "      <td>Belarus</td>\n",
+       "      <td>1,995,471\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>53.9°N 27.566667°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>11</th>\n",
+       "      <td>Vienna</td>\n",
+       "      <td>Austria</td>\n",
+       "      <td>1,982,442\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>48.2°N 16.366667°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12</th>\n",
+       "      <td>Warsaw</td>\n",
+       "      <td>Poland</td>\n",
+       "      <td>1,862,345\\n</td>\n",
+       "      <td>30 June 2022</td>\n",
+       "      <td>52.233333°N 21.016667°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>13</th>\n",
+       "      <td>Hamburg</td>\n",
+       "      <td>Germany</td>\n",
+       "      <td>1,853,935\\n</td>\n",
+       "      <td>31 December 2021</td>\n",
+       "      <td>53.565278°N 10.001389°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>14</th>\n",
+       "      <td>Budapest</td>\n",
+       "      <td>Hungary</td>\n",
+       "      <td>1,706,851\\n</td>\n",
+       "      <td>1 January 2022</td>\n",
+       "      <td>47.4925°N 19.051389°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>15</th>\n",
+       "      <td>Belgrade</td>\n",
+       "      <td>Serbia</td>\n",
+       "      <td>1,688,667\\n</td>\n",
+       "      <td>30 June 2021</td>\n",
+       "      <td>44.816667°N 20.466667°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>16</th>\n",
+       "      <td>Barcelona</td>\n",
+       "      <td>Spain</td>\n",
+       "      <td>1,636,732\\n</td>\n",
+       "      <td>1 January 2021</td>\n",
+       "      <td>41.383333°N 2.183333°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>17</th>\n",
+       "      <td>Munich</td>\n",
+       "      <td>Germany</td>\n",
+       "      <td>1,512,491\\n</td>\n",
+       "      <td>31 December 2022</td>\n",
+       "      <td>48.133333°N 11.566667°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>18</th>\n",
+       "      <td>Kharkiv</td>\n",
+       "      <td>Ukraine</td>\n",
+       "      <td>1,421,225\\n</td>\n",
+       "      <td>1 January 2022</td>\n",
+       "      <td>50.004444°N 36.231389°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>Prague</td>\n",
+       "      <td>Czech Republic</td>\n",
+       "      <td>1,357,326\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>50.083333°N 14.416667°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>20</th>\n",
+       "      <td>Milan</td>\n",
+       "      <td>Italy</td>\n",
+       "      <td>1,354,196\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>45.466667°N 9.183333°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>21</th>\n",
+       "      <td>Kazan</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>1,314,685\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>55.790278°N 49.134722°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>22</th>\n",
+       "      <td>Sofia</td>\n",
+       "      <td>Bulgaria</td>\n",
+       "      <td>1,307,439\\n</td>\n",
+       "      <td>31 December 2021</td>\n",
+       "      <td>42.7°N 23.33°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>23</th>\n",
+       "      <td>Nizhny Novgorod</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>1,213,477\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>56.326944°N 44.0075°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>24</th>\n",
+       "      <td>Tbilisi[d]\\n</td>\n",
+       "      <td>Georgia</td>\n",
+       "      <td>1,201,769\\n</td>\n",
+       "      <td>1 January 2022</td>\n",
+       "      <td>41.7166°N 44.7833°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25</th>\n",
+       "      <td>Samara</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>1,163,645\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>53.202778°N 50.140833°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>26</th>\n",
+       "      <td>Ufa</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>1,157,994\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>54.75°N 55.966667°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>27</th>\n",
+       "      <td>Birmingham</td>\n",
+       "      <td>United Kingdom</td>\n",
+       "      <td>1,144,900\\n</td>\n",
+       "      <td>21 March 2021</td>\n",
+       "      <td>52.483056°N 1.893611°W</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>28</th>\n",
+       "      <td>Rostov-on-Don</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>1,135,968\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>47.233333°N 39.7°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>29</th>\n",
+       "      <td>Krasnodar</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>1,121,291\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>45.033°N 38.967°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>30</th>\n",
+       "      <td>Yerevan[e]\\n</td>\n",
+       "      <td>Armenia</td>\n",
+       "      <td>1,092,800\\n</td>\n",
+       "      <td>1 January 2022</td>\n",
+       "      <td>40.181°N 44.51°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>31</th>\n",
+       "      <td>Cologne</td>\n",
+       "      <td>Germany</td>\n",
+       "      <td>1,073,096\\n</td>\n",
+       "      <td>31 December 2021</td>\n",
+       "      <td>50.936389°N 6.952778°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>32</th>\n",
+       "      <td>Voronezh</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>1,051,995\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>51.671667°N 39.210556°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>33</th>\n",
+       "      <td>Perm</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>1,027,153\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>58°N 56.316667°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>34</th>\n",
+       "      <td>Volgograd</td>\n",
+       "      <td>Russia</td>\n",
+       "      <td>1,025,662\\n</td>\n",
+       "      <td>1 January 2023</td>\n",
+       "      <td>48.7°N 44.516667°E</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>35</th>\n",
+       "      <td>Odesa</td>\n",
+       "      <td>Ukraine</td>\n",
+       "      <td>1,010,537\\n</td>\n",
+       "      <td>1 January 2022</td>\n",
+       "      <td>46.485°N 30.743°E</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "           city_name    country_name           population              date  \\\n",
+       "0        Istanbul[a]          Turkey  \\n15,907,951[b]\\n\\n  31 December 2022   \n",
+       "1          Moscow[c]          Russia         13,104,177\\n    1 January 2023   \n",
+       "2             London  United Kingdom          8,799,800\\n     21 March 2021   \n",
+       "3   Saint Petersburg          Russia          5,600,044\\n    1 January 2023   \n",
+       "4             Berlin         Germany          3,850,809\\n  31 December 2022   \n",
+       "5             Madrid           Spain          3,305,408\\n    1 January 2021   \n",
+       "6               Kyiv         Ukraine          2,952,301\\n    1 January 2022   \n",
+       "7               Rome           Italy          2,748,109\\n    1 January 2023   \n",
+       "8          Bucharest         Romania          2,162,281\\n       1 July 2022   \n",
+       "9              Paris          France          2,102,650\\n    1 January 2023   \n",
+       "10             Minsk         Belarus          1,995,471\\n    1 January 2023   \n",
+       "11            Vienna         Austria          1,982,442\\n    1 January 2023   \n",
+       "12            Warsaw          Poland          1,862,345\\n      30 June 2022   \n",
+       "13           Hamburg         Germany          1,853,935\\n  31 December 2021   \n",
+       "14          Budapest         Hungary          1,706,851\\n    1 January 2022   \n",
+       "15          Belgrade          Serbia          1,688,667\\n      30 June 2021   \n",
+       "16         Barcelona           Spain          1,636,732\\n    1 January 2021   \n",
+       "17            Munich         Germany          1,512,491\\n  31 December 2022   \n",
+       "18           Kharkiv         Ukraine          1,421,225\\n    1 January 2022   \n",
+       "19            Prague  Czech Republic          1,357,326\\n    1 January 2023   \n",
+       "20             Milan           Italy          1,354,196\\n    1 January 2023   \n",
+       "21             Kazan          Russia          1,314,685\\n    1 January 2023   \n",
+       "22             Sofia        Bulgaria          1,307,439\\n  31 December 2021   \n",
+       "23   Nizhny Novgorod          Russia          1,213,477\\n    1 January 2023   \n",
+       "24      Tbilisi[d]\\n         Georgia          1,201,769\\n    1 January 2022   \n",
+       "25            Samara          Russia          1,163,645\\n    1 January 2023   \n",
+       "26               Ufa          Russia          1,157,994\\n    1 January 2023   \n",
+       "27        Birmingham  United Kingdom          1,144,900\\n     21 March 2021   \n",
+       "28     Rostov-on-Don          Russia          1,135,968\\n    1 January 2023   \n",
+       "29         Krasnodar          Russia          1,121,291\\n    1 January 2023   \n",
+       "30      Yerevan[e]\\n         Armenia          1,092,800\\n    1 January 2022   \n",
+       "31           Cologne         Germany          1,073,096\\n  31 December 2021   \n",
+       "32          Voronezh          Russia          1,051,995\\n    1 January 2023   \n",
+       "33              Perm          Russia          1,027,153\\n    1 January 2023   \n",
+       "34         Volgograd          Russia          1,025,662\\n    1 January 2023   \n",
+       "35             Odesa         Ukraine          1,010,537\\n    1 January 2022   \n",
+       "\n",
+       "                   location  \n",
+       "0      41.013611°N 28.955°E  \n",
+       "1       55.75°N 37.616667°E  \n",
+       "2      51.507222°N 0.1275°W  \n",
+       "3            59.95°N 30.3°E  \n",
+       "4   52.516667°N 13.383333°E  \n",
+       "5    40.383333°N 3.716667°W  \n",
+       "6       50.45°N 30.523333°E  \n",
+       "7             41.9°N 12.5°E  \n",
+       "8     44.4325°N 26.103889°E  \n",
+       "9        48.8567°N 2.3508°E  \n",
+       "10       53.9°N 27.566667°E  \n",
+       "11       48.2°N 16.366667°E  \n",
+       "12  52.233333°N 21.016667°E  \n",
+       "13  53.565278°N 10.001389°E  \n",
+       "14    47.4925°N 19.051389°E  \n",
+       "15  44.816667°N 20.466667°E  \n",
+       "16   41.383333°N 2.183333°E  \n",
+       "17  48.133333°N 11.566667°E  \n",
+       "18  50.004444°N 36.231389°E  \n",
+       "19  50.083333°N 14.416667°E  \n",
+       "20   45.466667°N 9.183333°E  \n",
+       "21  55.790278°N 49.134722°E  \n",
+       "22           42.7°N 23.33°E  \n",
+       "23    56.326944°N 44.0075°E  \n",
+       "24      41.7166°N 44.7833°E  \n",
+       "25  53.202778°N 50.140833°E  \n",
+       "26      54.75°N 55.966667°E  \n",
+       "27   52.483056°N 1.893611°W  \n",
+       "28       47.233333°N 39.7°E  \n",
+       "29        45.033°N 38.967°E  \n",
+       "30         40.181°N 44.51°E  \n",
+       "31   50.936389°N 6.952778°E  \n",
+       "32  51.671667°N 39.210556°E  \n",
+       "33         58°N 56.316667°E  \n",
+       "34       48.7°N 44.516667°E  \n",
+       "35        46.485°N 30.743°E  "
+      ]
+     },
+     "execution_count": 160,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df = pd.DataFrame({'city_name' : city, \n",
+    "                   'country_name' : country, \n",
+    "                   'population' : population, \n",
+    "                   'date' : date, \n",
+    "                   'location' : location})\n",
+    "df"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 161,
+   "id": "d2535689-a5c8-44fa-b3df-4b924eddf359",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.to_csv('my_cities', index = False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 176,
+   "id": "90e28f2e-6c76-4fe5-a734-da5e07c2b567",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import sqlalchemy\n",
+    "import os\n",
+    "from dotenv import load_dotenv\n",
+    "import pandas as pd\n",
+    "import pymysql"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 177,
+   "id": "8b209825-c4fd-411e-84c6-25cff374cadc",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Python-dotenv could not parse statement starting at line 8\n",
+      "Python-dotenv could not parse statement starting at line 11\n",
+      "Python-dotenv could not parse statement starting at line 12\n",
+      "Python-dotenv could not parse statement starting at line 18\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 177,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from pathlib import Path  # python3 only\n",
+    "env_path = Path('.') / 'env'\n",
+    "load_dotenv(dotenv_path=env_path)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 181,
+   "id": "37bf8965-0b8a-445d-a6eb-f2df420b36bc",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "AWS = os.getenv('AWS')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 188,
+   "id": "1fded685-8c15-49aa-9ff0-4ec2c4e10739",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "schema=\"test_1\" # renamed from \"iss_workshop\"\n",
+    "host=\"wbs-project3-db.cps7wqn8zavr.eu-north-1.rds.amazonaws.com\"\n",
+    "user=\"admin\"\n",
+    "password=AWS\n",
+    "port=3306\n",
+    "con = f'mysql+pymysql://{user}:{password}@{host}:{port}/{schema}'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 189,
+   "id": "ccd1c76f-c95d-4b5a-8661-aa5383533101",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "36"
+      ]
+     },
+     "execution_count": 189,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.to_sql('cities_my', # renamed from \"iss_position\"\n",
+    "            if_exists='append', \n",
+    "            con=con, \n",
+    "            index=False)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.9"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
